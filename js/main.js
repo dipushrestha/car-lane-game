@@ -5,12 +5,14 @@ const GAME_HEIGHT = 600;
 
 const canvas = document.getElementById('game-container');
 
+let score = 0;
 let roadShifter = 0;
 const enemyCars = [];
 const player = new Car(true);
 player.y = GAME_HEIGHT - player.height - 10;
 
-startScreen();
+let scoreCard = createScoreCard();
+let startButton = startScreen();
 
 window.addEventListener('keydown', e => {
   if (e.key === 'a' || e.key === 'ArrowLeft') {
@@ -26,12 +28,21 @@ function startScreen() {
   let startButton = document.createElement('button');
   startButton.innerHTML = 'Start';
   startButton.classList.add('start-button');
-  document.querySelector('body').appendChild(startButton);
-  startButton.addEventListener('click', e => {
+  document.body.appendChild(startButton);
+  startButton.addEventListener('click', () => {
     startButton.style.display = 'none';
     setInterval(generateEnemyCars, 1300);
     draw();
   });
+  return startButton;
+}
+
+function createScoreCard() {
+  let scoreCard = document.createElement('span');
+  scoreCard.innerHTML = 'Score: 0';
+  scoreCard.classList.add('score-card');
+  document.body.appendChild(scoreCard);
+  return scoreCard;
 }
 
 function generateEnemyCars() {
@@ -43,7 +54,7 @@ function generateEnemyCars() {
 function draw() {
   canvas.width = GAME_WIDTH;
   canvas.height = GAME_HEIGHT;
-  canvas.style.backgroundColor = '#000';
+  canvas.style.backgroundColor = '#666560';
 
   if (!canvas.getContext) return;
 
@@ -68,22 +79,26 @@ function draw() {
   ctx.lineTo(130 * 2, GAME_HEIGHT);
   ctx.stroke();
 
-  ctx.fillStyle = '#00f';
+  ctx.fillStyle = '#008080';
   ctx.fillRect(player.x, player.y, player.width, player.height);
 
   for (let i = 0; i < enemyCars.length; i++) {
-    ctx.fillStyle = '#f00';
+    ctx.fillStyle = '#CD5C5C';
     ctx.fillRect(enemyCars[i].x, enemyCars[i].y, enemyCars[i].width, enemyCars[i].height);
     enemyCars[i].y += 2;
 
     if (enemyCars[i].roadLane === player.roadLane) {
       if (player.hasCollided(enemyCars[i])) {
+        score = 0;
+        startButton.style.display = 'block';
         return;
       }
     }
 
     if (enemyCars[i].y > GAME_HEIGHT) {
       enemyCars.splice(i, 1);
+      score++;
+      scoreCard.innerHTML = `Score: ${score}`;
     }
   }
 

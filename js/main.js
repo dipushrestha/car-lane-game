@@ -7,10 +7,12 @@ const canvas = document.getElementById('game-container');
 
 let score = 0;
 let roadShifter = 0;
-const enemyCars = [];
-const player = new Car(true);
+let enemyCars = [];
+let player = new Car(true);
 player.y = GAME_HEIGHT - player.height - 10;
 
+let intervalId;
+let requestId;
 let scoreCard = createScoreCard();
 let startButton = startScreen();
 
@@ -31,7 +33,7 @@ function startScreen() {
   document.body.appendChild(startButton);
   startButton.addEventListener('click', () => {
     startButton.style.display = 'none';
-    setInterval(generateEnemyCars, 1300);
+    intervalId = setInterval(generateEnemyCars, 1300);
     draw();
   });
   return startButton;
@@ -90,6 +92,9 @@ function draw() {
     if (enemyCars[i].roadLane === player.roadLane) {
       if (player.hasCollided(enemyCars[i])) {
         score = 0;
+        enemyCars = [];
+        clearInterval(intervalId);
+        window.cancelAnimationFrame(requestId);
         startButton.style.display = 'block';
         return;
       }
@@ -102,5 +107,5 @@ function draw() {
     }
   }
 
-  window.requestAnimationFrame(draw);
+  requestId = window.requestAnimationFrame(draw);
 }

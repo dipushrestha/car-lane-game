@@ -3,13 +3,14 @@ import Car from './Car.js';
 const GAME_WIDTH = 390;
 const GAME_HEIGHT = 600;
 
+const canvas = document.getElementById('game-container');
+
 let roadShifter = 0;
 const enemyCars = [];
 const player = new Car(true);
 player.y = GAME_HEIGHT - player.height - 10;
 
-setInterval(generateEnemyCars, 1300);
-draw();
+startScreen();
 
 window.addEventListener('keydown', e => {
   if (e.key === 'a' || e.key === 'ArrowLeft') {
@@ -21,6 +22,18 @@ window.addEventListener('keydown', e => {
   }
 });
 
+function startScreen() {
+  let startButton = document.createElement('button');
+  startButton.innerHTML = 'Start';
+  startButton.classList.add('start-button');
+  document.querySelector('body').appendChild(startButton);
+  startButton.addEventListener('click', e => {
+    startButton.style.display = 'none';
+    setInterval(generateEnemyCars, 1300);
+    draw();
+  });
+}
+
 function generateEnemyCars() {
   const enemyCar = new Car(false);
   enemyCar.y = -80;
@@ -28,8 +41,6 @@ function generateEnemyCars() {
 }
 
 function draw() {
-  const canvas = document.getElementById('game-container');
-
   canvas.width = GAME_WIDTH;
   canvas.height = GAME_HEIGHT;
   canvas.style.backgroundColor = '#000';

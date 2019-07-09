@@ -33,6 +33,7 @@ function startScreen() {
   document.body.appendChild(startButton);
   startButton.addEventListener('click', () => {
     startButton.style.display = 'none';
+    scoreCard.innerHTML = 'Score: 0';
     intervalId = setInterval(generateEnemyCars, 1300);
     draw();
   });
@@ -41,7 +42,6 @@ function startScreen() {
 
 function createScoreCard() {
   let scoreCard = document.createElement('span');
-  scoreCard.innerHTML = 'Score: 0';
   scoreCard.classList.add('score-card');
   document.body.appendChild(scoreCard);
   return scoreCard;
